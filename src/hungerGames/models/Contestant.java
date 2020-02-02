@@ -3,6 +3,7 @@ package hungerGames.models;
 public abstract class Contestant {
     //fields
     private String type;
+    private int ID;
     private String gender;
     private String name;
     private int HP = 100;
@@ -10,19 +11,19 @@ public abstract class Contestant {
     private int def;
     private boolean item;
     private int kills = 0;
-    private String status = "Living";
+    private boolean alive = true;
 
     //constructors
     public Contestant() {
     }
 
-    public Contestant(String type, String gender, String name, int off, int def, boolean item) {
+    public Contestant(String type, int ID, String gender, String name, int off, int def) {
         this.type = type;
+        this.ID = ID;
         this.gender = gender;
         this.name = name;
         this.off = off;
         this.def = def;
-        this.item = item;
     }
 
     //getters and setters
@@ -30,9 +31,11 @@ public abstract class Contestant {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    public void setType(String type) { this.type = type; }
+
+    public int getID() { return ID; }
+
+    public void setID(int ID) { this.ID = ID; }
 
     public String getGender() {
         return gender;
@@ -86,34 +89,13 @@ public abstract class Contestant {
         this.kills = kills;
     }
 
-    public String getStatus() {
-        return status;
-    }
+    public boolean isAlive() { return alive; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public void setAlive(boolean alive) { this.alive = alive; }
 
-    //Methods
+    //methods
+    public abstract String isLiving(boolean alive);
 
-    //simulates
-    public void fight(Contestant contestant, Contestant opponent){
-        while(contestant.getHP() > 0 && opponent.getHP() > 0) {
-            if (contestant.getOff() >= opponent.getDef()) {
-                opponent.setHP(opponent.getHP() - (contestant.getOff() - opponent.getDef()));
-                System.out.println("Attack succesfully! " + opponent.getName() + " took "
-                        + (contestant.getOff() - opponent.getDef()) + " damage!");
-                opponent.setStatus("Deceased");
-            } else if (opponent.getDef() > contestant.getOff() && opponent.getOff() > contestant.getDef()) {
-                contestant.setHP(contestant.getHP() - (opponent.getOff() - contestant.getDef()));
-                System.out.println("Opponent succesfully defended and countered with "
-                        + (opponent.getOff() - contestant.getDef()) + " damage!");
-                contestant.setStatus("Deceased");
-            } else if (opponent.getDef() > contestant.getOff() && opponent.getOff() < contestant.getDef()) {
-                System.out.println(contestant.getName() + " had an accident and died!");
-                contestant.setStatus("Deceased");
-                contestant.setHP(0);
-            }
-        }
-    }
+    public abstract void attack(Contestant con, Contestant opp);
+
 }

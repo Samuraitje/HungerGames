@@ -14,7 +14,7 @@ public class ArenaController {
 
     //Constructors
     public ArenaController() {
-        this.contestants = generateContestants();
+        this.contestants = generateContestants(18, 6);
     }
 
     //getters and setters
@@ -37,44 +37,60 @@ public class ArenaController {
     //Methods
 
     //Returns an filled ArrayList of 18 District and 6 Career contestants with random generated stats
-    public ArrayList<Contestant> generateContestants(){
+    public ArrayList<Contestant> generateContestants(int district, int career){
         ArrayList<Contestant> contestants = new ArrayList<>();
-        for(int i = 0; i < 18; i++ ) {
-            District district = new District(
-                    "District", genderGen(), randomName(), statGen(), statGen(), false
-            );
-            contestants.add(district);
+        for(int i = 0; i < district; i++ ) {
+            contestants.add(generateDistrict());
         }
-        for(int i = 0; i < 6; i++ ) {
-            Career career = new Career(
-                    "Career", genderGen(), randomName(), statGen(), statGen()
-            );
-            contestants.add(career);
+        for(int i = 0; i < career; i++ ) {
+            contestants.add(generateCareer());
         }
+
         return contestants;
+    }
+
+    public District generateDistrict(){
+        District district = new District(
+                "District",
+                numberGen(10000, 99999),
+                genderGen(),
+                randomName(),
+                numberGen(0, 100),
+                numberGen(0, 100));
+
+        return district;
+    }
+
+    public Career generateCareer(){
+        Career career = new Career(
+                "Career",
+                numberGen(10000, 99999),
+                genderGen(),
+                randomName(),
+                numberGen(0, 100),
+                numberGen(0, 100));
+
+        return career;
     }
 
     //Generates a random name from an Array
     public String randomName() {
-        int max = 29;
-        int min = 0;
-        int range = max - min + 1;
-        String name = "";
+        String name;
         String[] names = { "Jesenia", "Dominga", "Eloise", "Janett", "Julius", "Violet", "Temika", "Marchelle",
                 "Goldie", "Denice",  "Nicholle", "Reva", "Elayne", "Edith", "Reatha", "Roger", "Lieselotte", "Audrie",
                 "Rosella", "Catrina", "Karissa", "Evalyn", "Cecila", "Sharla", "Aurelia", "Tammie", "Denisha", "India",
-                "Sharell","Sharell"
+                "Sharell", "Sam", "Ahmed", "Gio", "Jeroen", "Clyde"
         };
-
-        name = names[(int)(Math.random() * range) + min];
+        Random random = new Random();
+        name = names[random.nextInt(34)];
 
         return name;
     };
 
     //Generates the gender type randomly
     public String genderGen() {
-        String gender = "";
-        if(Math.random() > 0.5){
+        String gender;
+        if(Math.random() < 0.5){
             gender = "Male";
         } else
             gender = "Female";
@@ -82,17 +98,15 @@ public class ArenaController {
         return gender;
     }
 
-    //Generates a random stat form 1 - 100
-    public int statGen() {
-        int stat = 0;
-        int max = 100;
-        int min = 1;
-        int range = max - min + 1;
+    //Generates a random number form a min to max range
+    public int numberGen(int min, int max){
+        if(min > max){
+            throw new IllegalArgumentException("Max must be greater than min");
+        }
+        Random random = new Random();
 
-        stat = (int)(Math.random() * range) + min;
-
-        return stat;
-    };
+        return random.nextInt((max - min) +1) + min;
+    }
 
     //Randomly selects a index number for the battle
     public int randomContestant(){
@@ -109,16 +123,34 @@ public class ArenaController {
     //Simulates the battle
     public void battleDaySimulation(){
         System.out.println(getBattleDay());
-        for(Contestant contestant: contestants){
-            int i = 1;
-            if(contestant.getStatus().equals("Living") && Math.random() > 0.5){
-                int opponent = randomContestant();
-                if (!contestants.get(opponent).equals(contestant)){
-                    contestant.fight(contestant, contestants.get(opponent));
-                };
-            } else System.out.println("Contestant " + contestant.getName() + "has not encountered an opponent today.");
-            i++;
-            setBattleDay(i);
-        }
     }
+
+
+
+
+
+//    public void fight(Contestant contestant, Contestant opponent){
+//        if
+//
+//    }
+
+//    public void fight(Contestant contestant, Contestant opponent){
+//        while((contestant.getHP() + opponent.getHP()) / 2 <= 0 ) {
+//            if (contestant.getOff() >= opponent.getDef()) {
+//                opponent.setHP(opponent.getHP() - (contestant.getOff() - opponent.getDef()));
+//                System.out.println("Attack succesfully! " + opponent.getName() + " took "
+//                        + (contestant.getOff() - opponent.getDef()) + " damage!");
+//                opponent.setStatus("Deceased");
+//            } else if (opponent.getDef() > contestant.getOff() && opponent.getOff() > contestant.getDef()) {
+//                contestant.setHP(contestant.getHP() - (opponent.getOff() - contestant.getDef()));
+//                System.out.println("Opponent succesfully defended and countered with "
+//                        + (opponent.getOff() - contestant.getDef()) + " damage!");
+//                contestant.setStatus("Deceased");
+//            } else if (opponent.getDef() > contestant.getOff() && opponent.getOff() < contestant.getDef()) {
+//                System.out.println(contestant.getName() + " had an accident and died!");
+//                contestant.setStatus("Deceased");
+//                contestant.setHP(0);
+//            }
+//        }
+//    }
 }
